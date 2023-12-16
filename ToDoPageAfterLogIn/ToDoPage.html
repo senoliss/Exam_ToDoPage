@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do App</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+
+  <div class="container" id="appContainer">
+    <h1>To-Do App</h1>
+    <p id="userInfo"></p>
+    <button id="addTaskBtn">Add Task</button>
+    <button id="logout_btn">Log Out</button>
+
+    <div id="taskForm" class="hidden">
+      <form id="addTaskForm">
+        <label for="taskType">Type:</label>
+        <input type="text" id="taskType" name="taskType" required>
+
+        <label for="taskContent">Content:</label>
+        <input type="text" id="taskContent" name="taskContent" required>
+
+        <label for="endDate">End Date:</label>
+        <input type="date" id="endDate" name="endDate" required>
+
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+
+    <ul id="taskList"></ul>
+  </div>
+
+  <script src="./script.js"></script>
+</body>
+</html>
