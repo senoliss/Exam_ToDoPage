@@ -31,10 +31,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Create a task object
     const taskData = {
+      userId: `${curentUser}`,
       type: taskType,
       content: taskContent,
-      endDate: endDate,
-      createdBy: `${curentUser}`,
+      endDate: endDate
     };
 
     // Add the task to the array for the current user
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
     logOutBtn.addEventListener('click', function () {
-      window.location.href = 'http://127.0.0.1:5500/Exam_ToDoPage/index.html';
+      window.location.href = 'http://127.0.0.1:5500/index.html';
       sessionStorage.removeItem('currUser');
   });
 
@@ -67,6 +67,35 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
+function getUserFromDb(){
+  const curentUser = sessionStorage.getItem('currUser');
+  console.log("Trying to fetch current user from db");
+    const resultMessage = document.getElementById('resultMessage');
+    let notOk = false;
+    const url = "https://localhost:7171/api/Auth" + '?username=' + name + '&password=' + pass;
+    fetch(url)  // Grazina Promise objekta
+    .then(response => {
+        console.log("response status", response);
+        if(response.ok === true) {notOk = true;}
+        return response.json()
+    })  //  Promise objektas sulaukiamas su then
+    .then(result =>{
+        console.log("result", result);
+        if(notOk === true) {
+            resultMessage.innerHTML = 'Log In <b>successful!</b> Redirecting in Xs...';
+            // create a session storage and create a user there to transfer between pages, later create a local storage to keep users data after he creates something and etc.
+            sessionStorage.setItem("currUser", name);
+            window.location.href = 'http://127.0.0.1:5500/ToDoPageAfterLogIn/ToDoPage.html';
+        }
+        else {
+            resultMessage.style.color = '#ff0033';
+            resultMessage.innerHTML = `<b>${result.error} !</b>`;
+        }
+    })
+    .catch(error =>{
+        console.log("My error ==> ", error);
+    });
+};
 
 
 // document.addEventListener('DOMContentLoaded', function () {

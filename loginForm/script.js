@@ -2,7 +2,7 @@ document.getElementById('back_btn').addEventListener('click', function () {
     // Open the registration page in a new window or redirect to it
     // window.location.href = 'index.html';
     // history.go(-1);
-    window.location.href = 'http://127.0.0.1:5500/Exam_ToDoPage/index.html';
+    window.location.href = 'http://127.0.0.1:5500/index.html';
     // History.back();  // this method prompts user to fill the required form fields even on going back..
 });
 
@@ -39,8 +39,8 @@ function fetchData(name, pass){
         if(notOk === true) {
             resultMessage.innerHTML = 'Log In <b>successful!</b> Redirecting in Xs...';
             // create a session storage and create a user there to transfer between pages, later create a local storage to keep users data after he creates something and etc.
-            sessionStorage.setItem("currUser", name);
-            window.location.href = 'http://127.0.0.1:5500/Exam_ToDoPage/ToDoPageAfterLogIn/ToDoPage.html';
+            localStorage.setItem("curentUser", JSON.stringify(result));
+            // window.location.href = 'http://127.0.0.1:5500/ToDoPageAfterLogIn/ToDoPage.html';
         }
         else {
             resultMessage.style.color = '#ff0033';
