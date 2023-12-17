@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
-  const curentUser = sessionStorage.getItem('currUser');
-  document.getElementById('userInfo').innerHTML = `Logged in as: <b>${curentUser}</b>`;
+  const curentUser = JSON.parse(localStorage.getItem('curentUser'));
+  document.getElementById('userInfo').innerHTML = `Logged in as: <b>${curentUser.userName}</b>`;
 
   const addTaskBtn = document.getElementById('addTaskBtn');
   const taskForm = document.getElementById('taskForm');

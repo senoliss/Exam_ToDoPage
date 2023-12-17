@@ -11,7 +11,6 @@ document.getElementById('back_btn').addEventListener('click', function () {
 const loginForm = document.getElementById('loginForm');
 const textInputName = document.getElementById('name');
 const textInputPass = document.getElementById('password');
-const displayText = document.getElementById('leleTextas');
 
 loginForm.addEventListener('submit', function(event) {
     event.preventDefault();
