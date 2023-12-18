@@ -38,8 +38,8 @@ function fetchData(name, pass){
         if(notOk === true) {
             resultMessage.innerHTML = 'Log In <b>successful!</b> Redirecting in Xs...';
             // create a session storage and create a user there to transfer between pages, later create a local storage to keep users data after he creates something and etc.
-            localStorage.setItem("curentUser", JSON.stringify(result));
-            // window.location.href = 'http://127.0.0.1:5500/ToDoPageAfterLogIn/ToDoPage.html';
+            localStorage.setItem("currentUser", JSON.stringify(result));
+            window.location.href = 'http://127.0.0.1:5500/ToDoPageAfterLogIn/ToDoPage.html';
         }
         else {
             resultMessage.style.color = '#ff0033';

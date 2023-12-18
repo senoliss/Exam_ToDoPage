@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
-  const curentUser = JSON.parse(localStorage.getItem('curentUser'));
-  document.getElementById('userInfo').innerHTML = `Logged in as: <b>${curentUser.userName}</b>`;
+  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+  document.getElementById('userInfo').innerHTML = `Logged in as: <b>${currentUser.userName}</b>`;
 
   const addTaskBtn = document.getElementById('addTaskBtn');
   const taskForm = document.getElementById('taskForm');
@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Retrieve tasks from localStorage when the page loads
   // NEED TO RETRIEVE THESE TASKS FROM 'TO DOS' TABLE
-  const userTasks = JSON.parse(localStorage.getItem(curentUser)) || [];
+  const userTasks = JSON.parse(localStorage.getItem(currentUser)) || [];
 
   // Display existing tasks
   userTasks.forEach(taskData => {
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Create a task object
     const taskData = {
-      userId: `${curentUser}`,
+      userId: `${currentUser}`,
       type: taskType,
       content: taskContent,
       endDate: endDate
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Save the updated userTasks array to localStorage
     // SAVE THE TASK TO DB INTO 'TO DOS' TABLE
-    localStorage.setItem(curentUser, JSON.stringify(userTasks));
+    localStorage.setItem(currentUser, JSON.stringify(userTasks));
 
     // Display the new task
     const taskItem = createTaskElement(taskData);
@@ -95,6 +95,33 @@ function getUserFromDb(){
     .catch(error =>{
         console.log("My error ==> ", error);
     });
+};
+
+getToDosArray = () => {
+  const url = "https://localhost:7171/api/ToDo";
+
+  fetch(url, {
+      method: 'GET',
+      headers: {
+          'Content-type': 'application/json'
+      }
+    })
+    .then(response => {
+      return response.json()}
+      )
+    .then(result => {
+      console.log('ToDos were fetched successfully');
+      for (let i=0; i< result.length; i++){
+        console.log(result[i]);
+      };
+      return result.json();
+    })
+    .catch(error => console.log(error));
+};
+
+filterToDosArrayWithUserIdFromLocalStorage = () => {
+  const toDosArray = getToDosArray();
+  toDosArray.forEach(element => console.log(element));
 };
 
 
