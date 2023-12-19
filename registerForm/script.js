@@ -52,14 +52,18 @@ function postData(name, pass, email){
       console.log("result", result);
       if(notOk === true) {
           resultMessage.style.color = 'black';
-          resultMessage.innerHTML = `Register of user: ${name} is <b>successful!</b> Redirecting in Xs...`;
+          resultMessage.innerHTML = `Register of user: ${name} is <b>successful!</b> Redirecting in few moments...`;
           // create a session storage and create a user there to transfer between pages, later create a local storage to keep users data after he creates something and etc.
-          loginUserAndSaveDataToLocalStorage(newUserBody);
-          // window.location.href = 'http://127.0.0.1:5500/ToDoPageAfterLogIn/ToDoPage.html';
+        //   loginUserAndSaveDataToLocalStorage(newUserBody);
+          window.location.href = 'http://127.0.0.1:5500/loginForm/loginForm.html';
       }
       else {
-          resultMessage.style.color = '#ff0033';
-          resultMessage.innerHTML = `<b>${result.error} !</b>`;
+        resultMessage.style.color = '#ff0033';
+        if(result.error === undefined)
+        {
+            resultMessage.innerHTML = `<b>User already exists !</b>`;
+        }
+        resultMessage.innerHTML = `<b>${result.error} !</b>`;
       }
   })
   .catch(error =>{
@@ -82,10 +86,14 @@ loginUserAndSaveDataToLocalStorage = (obj) => {
         if(notOk === true) {
             // create a session storage and create a user there to transfer between pages, later create a local storage to keep users data after he creates something and etc.
             localStorage.setItem("curentUser", JSON.stringify(result));
-            window.location.href = 'http://127.0.0.1:5500/ToDoPageAfterLogIn/ToDoPage.html';
+            window.location.href = '../loginForm/loginForm.html';
         }
         else {
             resultMessage.style.color = '#ff0033';
+            if(result.error === undefined)
+            {
+                resultMessage.innerHTML = `<b>User already exists !</b>`;
+            }
             resultMessage.innerHTML = `<b>${result.error} !</b>`;
         }
     })
