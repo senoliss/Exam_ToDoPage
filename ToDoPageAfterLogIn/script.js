@@ -1,69 +1,103 @@
 document.addEventListener('DOMContentLoaded', function () {
-  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-  document.getElementById('userInfo').innerHTML = `Logged in as: <b>${currentUser.userName}</b>`;
+  const currentUserToken = localStorage.getItem('currentUser');
+  
+  // ======================== PARSING JWT TOKEN ON DOM LOAD ================================
+ 
+  const decodedToken = parseJwt(currentUserToken);
+  
+  console.log(decodedToken);
+  
+  const name = decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];
+  const role = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+  
+  console.log('Name:', name);
+  console.log('Role:', role);
+  
+  
+  // =======================================================================================
+  
+  // ======================== ASSIGN THE HTML ELEMENTS TO VARIABLES ========================
 
   const addTaskBtn = document.getElementById('addTaskBtn');
   const taskForm = document.getElementById('taskForm');
   const addTaskForm = document.getElementById('addTaskForm');
   const logOutBtn = document.getElementById('logout_btn');
+  const adminBtn = document.getElementById('adminPanel');
   const taskList = document.getElementById('taskList');
   const editTaskBtn = document.getElementById('logout_btn');
   const deleteTaskBtn = document.getElementById('logout_btn');
 
-  // NEED TO RETRIEVE THESE TASKS FROM 'TO DOS' TABLE
-    
-  getToDosArray().then(tasks => {
-    console.log('All tasks:', tasks);
-    // trying to filter all tasks from API with userid from local storage
-    const userTasks = tasks.filter(task => task.userId === currentUser.id);
-    console.log('User tasks:', userTasks);
+  const profileForm = document.getElementById('profileForm');
+  const profileBtn = document.getElementById('userProfile');
+  const residenceForm = document.getElementById('residenceForm');
+  const residenceBtn = document.getElementById('userResidence');
 
-    // sort the tasks by endDate for test and later try to implement visuals on tasks which are due sooner
-    userTasks.sort((a, b) => new Date(a.endDate) - new Date(b.endDate));
+  // =======================================================================================
 
-    // display existing tasks
-    userTasks.forEach(taskData => {
-      const taskItem = createTaskElement(taskData);
-      taskList.appendChild(taskItem);
-    });
-  });
+  // =============== CHECCKING IF USER IS ADMIN FOR ADDITIONAL FUNCTIONALITY ===============
 
-  addTaskBtn.addEventListener('click', function () {
-    taskForm.classList.toggle('hidden');
-  });
+  if(role === "Admin")
+  {
+    document.getElementById('userInfo').innerHTML = `Logged in as: <b>${name}</b> (<span style="color: red; font-weight: bold;">Admin</span>)`;
+    adminBtn.classList.toggle('hidden');
+    // document.getElementById('userInfo').innerHTML = `Logged in as: <b>${name}</b> <span style="color: red; text-decoration: underline;">Admin</span>`;
+  }
+  else
+  {
+    document.getElementById('userInfo').innerHTML = `Logged in as: <b>${name}</b>`;
+  }
 
-  addTaskForm.addEventListener('submit', function (event) {
-    event.preventDefault();
+  // =======================================================================================
 
-    const taskType = document.getElementById('taskType').value;
-    const taskContent = document.getElementById('taskContent').value;
-    const endDate = document.getElementById('endDate').value;
+  profileBtn.addEventListener('click', function () {
+    profileForm.classList.toggle('hidden');
+  })
 
-    // Create a task object
-    const taskData = {
-      userId: currentUser.id,
-      type: taskType,
-      content: taskContent,
-      endDate: endDate
-    };
-
-    // SAVE THE TASK TO DB INTO 'TO DOS' TABLE
-    saveTaskToDB(taskData);
-
-    // Display the new task
-    const taskItem = createTaskElement(taskData);
-    taskList.appendChild(taskItem);
-
-    addTaskForm.reset();
-    taskForm.classList.add('hidden');
-    // relaod window to fix the bugs of delete restriction
-    location.reload();
-  });
+  residenceBtn.addEventListener('click', function () {
+    residenceForm.classList.toggle('hidden');
+  })
 
   logOutBtn.addEventListener('click', function () {
       window.location.href = '../index.html';    // relative path is better to use than local
       localStorage.removeItem('currentUser');
   });
+
+  addUserInfoForm.addEventListener('submit', function (event) {
+    event.preventDefault();
+    
+    // Collect user info data
+    const userInfoData = {
+      // Get values from user info form fields
+      // Example:
+      uName: document.getElementById('uName').value,
+      uSurname: document.getElementById('uSurname').value,
+      // ... (collect other user info fields)
+    };
+
+    // Check if residence form is visible
+    if (!residenceForm.classList.contains('hidden')) {
+      // Collect residence info data
+      const residenceInfoData = {
+        // Get values from residence form fields
+        // Example:
+        residenceTown: document.getElementById('residenceTown').value,
+        residenceStreet: document.getElementById('residenceStreet').value,
+        // ... (collect other residence info fields)
+      };
+
+      // Include residence info data in user info data
+      userInfoData.residenceInfo = residenceInfoData;
+    }
+
+    // Send userInfoData to the backend (you need to implement this)
+    // Example: send a POST request to the user info API endpoint
+
+    // Reset forms and hide residence form
+    addUserInfoForm.reset();
+    residenceForm.classList.add('hidden');
+  });
+
+});   // DOM ENDS HERE
 
   function createTaskElement(taskData) {
     const taskItem = document.createElement('li');
@@ -83,7 +117,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     return taskItem;
   }
-});
+
+function parseJwt (token) {
+
+  var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+  
+  // this is Node.js, not supported on browsers: return JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+}
+
 function saveTaskToDB(taskData) {
   const url = "https://localhost:7171/api/ToDo";
   fetch(url, {

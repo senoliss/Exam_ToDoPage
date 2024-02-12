@@ -25,12 +25,13 @@ registerForm.addEventListener('submit', function(event) {
 });
 
 function postData(name, pass, email){
+
   console.log("Register button clicked, trying to post data");
   const resultMessage = document.getElementById('resultMessage');
   let notOk = false;
-  const url = "https://localhost:7171/api/Auth/";
+  const url = "https://localhost:7041/api/Users/Register";
 
-  const newUserBody = {
+  const signupUserBody = {
     "userName": name,
     "password": pass,
     "email": email
@@ -41,7 +42,7 @@ function postData(name, pass, email){
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(newUserBody)
+    body: JSON.stringify(signupUserBody)
   })  // Grazina Promise objekta
   .then(response => {
       console.log("response status", response);

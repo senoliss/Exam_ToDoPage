@@ -18,27 +18,49 @@ loginForm.addEventListener('submit', function(event) {
     const typedName = textInputName.value;
     const typedPass = textInputPass.value;
 
+    
+
     console.log(`Typed name: ${typedName}, typed pass: ${typedPass}`);
     fetchData(typedName, typedPass);
 });
 
-function fetchData(name, pass){
+function fetchData(login, pass){
     console.log("Login button clicked, trying to fetch data");
+
+    const loginUserBody = {
+        userName: login,
+        password: pass
+      };
+
     const resultMessage = document.getElementById('resultMessage');
     let notOk = false;
-    const url = "https://localhost:7171/api/Auth" + '?username=' + name + '&password=' + pass;
-    fetch(url)  // Grazina Promise objekta
+    const url = "https://localhost:7041/api/Users/Login";
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json'
+        },
+        body: JSON.stringify(loginUserBody)
+    })  // Grazina Promise objekta
     .then(response => {
         console.log("response status", response);
-        if(response.ok === true) {notOk = true;}
-        return response.json()
+        if(response.status === 400)
+        {
+            return response.resultMessage;
+        }
+        if(response.ok === true)
+        {
+            notOk = true;
+        }
+        console.log(response);
+        return response.json();
     })  //  Promise objektas sulaukiamas su then
     .then(result =>{
-        console.log("result", result);
+        console.log("result", result.message);
         if(notOk === true) {
             resultMessage.innerHTML = 'Log In <b>successful!</b> Redirecting in Xs...';
             // create a session storage and create a user there to transfer between pages, later create a local storage to keep users data after he creates something and etc.
-            localStorage.setItem("currentUser", JSON.stringify(result));
+            localStorage.setItem("currentUser", result.message);
             window.location.href = 'http://127.0.0.1:5500/ToDoPageAfterLogIn/ToDoPage.html';
         }
         else {
