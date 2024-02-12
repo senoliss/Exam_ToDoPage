@@ -9,10 +9,56 @@
 <body>
 
   <div class="container" id="appContainer">
-    <h1>To-Do App</h1>
+    <h1>NETUA2 Exam</h1>
     <p id="userInfo"></p>
-    <button id="addTaskBtn">Add Task</button>
+    <button id="userProfile">Profile</button>
     <button id="logout_btn">Log Out</button>
+    <button id="adminPanel" class="hidden">Admin Panel</button>
+
+
+    <div id="profileForm" class="hidden">
+      <h2>User Profile</h2>
+      <form id="addUserInfoForm">
+        <label for="uName">Name:</label>
+        <input type="text" id="uName" name="uName"  required>
+
+        <label for="uSurname">Surname:</label>
+        <input type="text" id="uSurname" name="uSurname" required>
+
+        <label for="uID">Personal ID:</label>
+        <input type="text" id="uID" name="uID" placeholder="3xxxxxx0000"required>
+
+        <label for="uPhone">Phone Number:</label>
+        <input type="text" id="uPhone" name="uPhone" placeholder="+370xxxxxxx" required>
+
+        <label for="uMail">E-Mail:</label>
+        <input type="email" id="uMail" name="uMail" placeholder="your@email.com" required>
+
+        <label for="uPicture">Profile Picture:</label>
+        <input type="file" id="uPicture" name="uPicture" required>
+
+        <button type="button" id="userResidence">Add - Location</button>
+
+          <!-- <form id="addUserresidenceForm"> -->
+            <div id="residenceForm" class="hidden">
+              <label for="urTown">Town:</label>
+              <input type="text" id="urTown" name="urTown"  required>
+
+              <label for="urStreet">Street:</label>
+              <input type="text" id="urStreet" name="urStreet" required>
+
+              <label for="urBuildingNr">Building Number:</label>
+              <input type="text" id="urBuildingNr" name="urBuildingNr" placeholder="20 or 114B"required>
+
+              <label for="urFlatNr">Flat Number:</label>
+              <input type="text" id="urFlatNr" name="urFlatNr" placeholder="20 or 114B or empty" required>
+
+            </div>
+          <!-- </form> -->
+        <button type="submit">Submit</button>
+      </form>
+      
+    </div>
 
     <div id="taskForm" class="hidden">
       <form id="addTaskForm">
