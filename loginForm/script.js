@@ -53,15 +53,15 @@ function fetchData(login, pass){
             notOk = true;
         }
         console.log(response);
-        return response.json();
+        return response.text();
     })  //  Promise objektas sulaukiamas su then
     .then(result =>{
         console.log("result", result.message);
         if(notOk === true) {
             resultMessage.innerHTML = 'Log In <b>successful!</b> Redirecting in Xs...';
             // create a session storage and create a user there to transfer between pages, later create a local storage to keep users data after he creates something and etc.
-            localStorage.setItem("currentUser", result.message);
-            window.location.href = 'http://127.0.0.1:5500/ToDoPageAfterLogIn/ToDoPage.html';
+            localStorage.setItem("currentUser", result);
+            window.location.href = 'http://127.0.0.1:5500/MainPage/mainPage.html';
         }
         else {
             resultMessage.style.color = '#ff0033';

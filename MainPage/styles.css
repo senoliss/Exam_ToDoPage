@@ -5,13 +5,16 @@ body {
   background-color: #f4f4f4;
 }
 
-.container {
+.container, #adminPanelDiv {
   max-width: 600px;
   margin: 20px auto;
   padding: 20px;
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+#appContainer2{
+  max-width: 95vw;
 }
 
 .hidden {
@@ -33,7 +36,7 @@ button:hover {
   background-color: #45a049;
 }
 
-form {
+form{
   display: flex;
   flex-direction: column;
 }

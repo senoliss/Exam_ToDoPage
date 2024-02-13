@@ -7,40 +7,56 @@
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
+  <div class="container" id="appContainer2">
 
+    <button id="userProfile">Profile</button>
+    <button id="adminPanel" class="hidden">Admin Panel</button>
+    <button id="logout_btn">Log Out</button>
+
+  </div>
   <div class="container" id="appContainer">
     <h1>NETUA2 Exam</h1>
     <p id="userInfo"></p>
-    <button id="userProfile">Profile</button>
-    <button id="logout_btn">Log Out</button>
-    <button id="adminPanel" class="hidden">Admin Panel</button>
 
 
-    <div id="profileForm" class="hidden">
+    <div id="profileInfoButtons" class="hidden">
+
+      <button type="button" id="userInfoBtn">Add - Personal Information</button>
+      <button type="button" id="userResidenceBtn">Add - Location</button>
+      
+      <div id="profileInfoDiv" class="hidden">
       <h2>User Profile</h2>
+      <p id="userProfileMessage"></p>
       <form id="addUserInfoForm">
+
         <label for="uName">Name:</label>
-        <input type="text" id="uName" name="uName"  required>
+        <input type="text" id="uName" name="uName"  >
 
         <label for="uSurname">Surname:</label>
-        <input type="text" id="uSurname" name="uSurname" required>
+        <input type="text" id="uSurname" name="uSurname" >
 
         <label for="uID">Personal ID:</label>
-        <input type="text" id="uID" name="uID" placeholder="3xxxxxx0000"required>
+        <input type="text" id="uID" name="uID" placeholder="3xxxxxx0000">
 
         <label for="uPhone">Phone Number:</label>
-        <input type="text" id="uPhone" name="uPhone" placeholder="+370xxxxxxx" required>
+        <input type="text" id="uPhone" name="uPhone" placeholder="+370xxxxxxx" >
 
         <label for="uMail">E-Mail:</label>
-        <input type="email" id="uMail" name="uMail" placeholder="your@email.com" required>
+        <input type="email" id="uMail" name="uMail" placeholder="your@email.com" >
 
         <label for="uPicture">Profile Picture:</label>
-        <input type="file" id="uPicture" name="uPicture" required>
+        <input type="file" id="uPicture" name="uPicture" >
 
-        <button type="button" id="userResidence">Add - Location</button>
+        <button type="submit">Submit</button>
+      
+      </form>
+    </div>
 
-          <!-- <form id="addUserresidenceForm"> -->
-            <div id="residenceForm" class="hidden">
+
+      <div id="profileResidenceDiv" class="hidden">
+          <form id="addUserresidenceForm">
+            <h2>User Residence</h2>
+            <p id="userProfileMessage2"></p>
               <label for="urTown">Town:</label>
               <input type="text" id="urTown" name="urTown"  required>
 
@@ -53,10 +69,10 @@
               <label for="urFlatNr">Flat Number:</label>
               <input type="text" id="urFlatNr" name="urFlatNr" placeholder="20 or 114B or empty" required>
 
-            </div>
-          <!-- </form> -->
-        <button type="submit">Submit</button>
-      </form>
+              
+              <button type="submit">Submit</button>
+            </form>
+      </div>
       
     </div>
 
@@ -90,7 +106,11 @@
 
     <ul id="taskList"></ul>
   </div>
+  
+  <div class="hidden" id="adminPanelDiv">
+    <button type="button" id="adminUsersPanel">Users</button>
 
+  </div>
   <script src="./script.js"></script>
 </body>
 </html>
