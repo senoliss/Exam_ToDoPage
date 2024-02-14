@@ -75,41 +75,15 @@
       </div>
       
     </div>
-
-    <div id="taskForm" class="hidden">
-      <form id="addTaskForm">
-        <label for="taskType">Type:</label>
-        <input type="text" id="taskType" name="taskType" required>
-
-        <label for="taskContent">Content:</label>
-        <input type="text" id="taskContent" name="taskContent" required>
-
-        <label for="endDate">End Date:</label>
-        <input type="date" id="endDate" name="endDate" required>
-
-        <button type="submit">Submit</button>
-      </form>
-      
-    </div>
-    <form id="editTaskForm" class="hidden">
-      <label for="editTaskType">Task Type:</label>
-      <input type="text" id="editTaskType" name="type" required>
-    
-      <label for="editTaskContent">Task Content:</label>
-      <textarea id="editTaskContent" name="content" required></textarea>
-    
-      <label for="editEndDate">End Date:</label>
-      <input type="date" id="editEndDate" name="endDate" required>
-    
-      <button type="submit">Save Changes</button>
-    </form>
-
-    <ul id="taskList"></ul>
   </div>
   
   <div class="hidden" id="adminPanelDiv">
     <button type="button" id="adminUsersPanel">Users</button>
-
+    <h2>All Users:</h2>
+    <p id="adminUsersPanelMsg"></p>
+    <!-- <div id="userDropdowns"></div>
+    <div id="userInfoPanels"></div> -->
+    <ul id="user-list"></ul>
   </div>
   <script src="./script.js"></script>
 </body>

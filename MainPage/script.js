@@ -41,6 +41,9 @@ document.addEventListener('DOMContentLoaded', function () {
   // info message in user info section
   const userInfoMessage = document.getElementById('userProfileMessage');
 
+  // button to load all the users in Admin Panel
+  const adminUsersBtn = document.getElementById('adminUsersPanel');
+
   let userHasInfo = false;
   let userHasRes = false;
   
@@ -100,11 +103,12 @@ document.addEventListener('DOMContentLoaded', function () {
         // Additional logic if needed
       }
     });
-  })
+  });
 
   adminBtn.addEventListener('click', function () {
     adminPanelDiv.classList.toggle('hidden');
-  })
+  });
+
 
   logOutBtn.addEventListener('click', function () {
       window.location.href = '../index.html';    // relative path is better to use than local
@@ -112,6 +116,51 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // =======================================================================================
+
+
+  // ============= ADMIN STUFF - FETCHING ALL USERS AND DISPLAYING DYNAMICALLY =============
+  // using 'async function' and 'await' before get all users because fetch is a promise object and is kinda like lazy loading
+
+  adminUsersBtn.addEventListener('click', async function () {
+    const usersList = await getAllUsersFromDB(currentUserToken);
+    populateAdminPanel(usersList);
+
+
+    const userHeaders = document.querySelectorAll('.user-header');
+
+    userHeaders.forEach(header => {
+      header.addEventListener('click', function () {
+         const userItem = this.closest('.user-item');
+         userItem.classList.toggle('open');
+      });
+    });
+
+
+    const userDeleteButtons = document.querySelectorAll('.user-delete-button');
+
+    userDeleteButtons.forEach(button => {
+      button.addEventListener('click', async function() {
+  
+        const userIdToDelete = parseInt(this.id.split('-')[3]);
+  
+        console.log('Deleting user with ID:', userIdToDelete);
+
+        // Assuming you have an API call to delete the user from the database
+      await deleteUserFromDB(userIdToDelete, currentUserToken);
+
+      // Remove the user item from the UI
+      const userItem = this.closest('.user-item');
+      userItem.remove();
+  
+      });
+    });
+
+  });
+
+
+
+  // =======================================================================================
+
 
   // ====================== SUBMIT BUTTON FOR FIRST FORM - USER INFO =======================
   addUserInfoForm.addEventListener('submit', function (event) {
@@ -211,6 +260,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 // =======================================================================================
+
 
 });   // DOM ENDS HERE
 
@@ -488,5 +538,197 @@ function updateUserResToDB(userResJS, JWTtoken){
 // =======================================================================================
 
 // ================================= ADMIN FUNCTIONS =====================================
+function getAllUsersFromDB(JWTtoken){
+  const url = "https://localhost:7041/api/Users/GetAllUsers";
 
+  return fetch(url, {
+      method: 'GET',
+      headers: {
+          'Content-type': 'application/json',
+          'Authorization': `Bearer ${JWTtoken}`
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+        document.getElementById('adminUsersPanelMsg').innerHTML = 'Users information <b>loaded</b>!';
+        
+        return response.json();
+      } 
+      else if (response.status === 400) {
+        // Handle specific 400 Bad Request error
+        return response.text().then(errorMessage => {
+          console.error(`Bad Request: ${errorMessage}`);
+          // error message in user info form
+          document.getElementById('adminUsersPanelMsg').innerHTML = errorMessage;
+          throw new Error(`Bad Request: ${errorMessage}`);
+        });
+      } 
+      else {
+        // Handle other errors
+        console.error('Failed to fetch users information!');
+        document.getElementById('adminUsersPanelMsg').innerHTML = '<b>Failed</b> to fetch users information!';
+        throw new Error('Failed to fetch users information!');
+      }
+    })
+    .then(result => {
+      console.log(result);
+      if(result != null)
+      {
+        
+      }
+      else{
+        console.log('Result is empty');
+      }
+      return result;
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
+
+function populateAdminPanel(users) {
+  // const userDropdownsContainer = document.getElementById('userDropdowns');
+  // const userInfoPanelsContainer = document.getElementById('userInfoPanels');
+
+  // // Clear existing content
+  // userDropdownsContainer.innerHTML = '';
+  // userInfoPanelsContainer.innerHTML = '';
+  // // adminPanelDiv.innerHTML = '';
+
+  // // Create dropdowns for each user
+  // users.forEach(user => {
+  //     const userDropdown = createUserDropdown(user);
+  //     const userInfoPanel = createUserInfoPanel(user);
+  //     // adminPanelDiv.appendChild(userDropdown);
+
+  //     userDropdown.addEventListener('click', () => {
+  //       // Toggle visibility for the user panel when dropdown is clicked
+  //       userInfoPanel.classList.toggle('hidden');
+  //     })
+
+  //     userDropdownsContainer.appendChild(userDropdown);
+  //     userInfoPanelsContainer.appendChild(userInfoPanel);
+
+  // });
+
+  const usersUL = document.getElementById('user-list');
+
+  // Create dropdowns for each user
+  users.forEach(user => {
+    const userItem = document.createElement('li');
+    userItem.classList.add('user-item');
+    
+    const userHeadersDiv = createUserDropdown(user);
+    const userContentDiv = createUserInfoPanel(user);
+      
+      userItem.appendChild(userHeadersDiv);
+      userItem.appendChild(userContentDiv);
+
+      usersUL.appendChild(userItem);
+  });
+};
+
+function createUserDropdown(user) {
+  // const dropdownItem = document.createElement('div');
+  // dropdownItem.classList.add('user-dropdown');
+
+  // const userHeader = document.createElement('div');
+  // if(user.userInfo != null)
+  // {
+  //   userHeader.innerHTML = `<b>${user.userName}</b> - ${user.userInfo.name} ${user.userInfo.surname}`;
+  // }
+  // else
+  // {
+  //   userHeader.innerHTML = `<b>${user.userName}</b> - no information yet`;
+  // }
+  // dropdownItem.appendChild(userHeader);
+
+  // // Add a click event listener to show detailed user information
+  // // dropdownItem.addEventListener('click', function () {
+  // //     // Call a function to display detailed user information (you need to implement this)
+  // //     createUserInfoPanel(user);
+  // // });
+
+  // return dropdownItem;
+
+  const dropdownItem = document.createElement('div');
+  dropdownItem.classList.add('user-header');
+
+  if(user.userInfo != null)
+  {
+    dropdownItem.innerHTML = `<b>${user.userName}</b> - ${user.userInfo.name} ${user.userInfo.surname}`;
+  }
+  else
+  {
+    dropdownItem.innerHTML = `<b>${user.userName}</b> - no information yet`;
+  }
+
+  return dropdownItem;
+};
+
+function createUserInfoPanel(user) {
+  const userContentDiv = document.createElement('div');
+  userContentDiv.classList.add('user-content');
+  
+  // Populate user info in the panel
+  const userContentDivInner = document.createElement('div');
+  userContentDivInner.classList.add('user-content-inner');
+
+  const userIdElement = document.createElement('p');
+  userIdElement.textContent = `User ID: ${user.userId}`;
+  userContentDivInner.appendChild(userIdElement);
+  
+  const emailElement = document.createElement('p');
+  emailElement.textContent = `Email: ${user.email}`;
+  userContentDivInner.appendChild(emailElement);
+  
+  const deleteButton = document.createElement('button');
+  deleteButton.innerHTML = 'Delete';
+  deleteButton.classList.add('user-delete-button');
+  deleteButton.id = 'user-delete-button-' + user.userId;
+  userContentDivInner.appendChild(deleteButton);
+  
+  console.log('Display detailed user info:', user);
+  userContentDiv.appendChild(userContentDivInner);
+  return userContentDiv;
+};
+
+function deleteUserFromDB(userID, JWTtoken) {
+  const url = `https://localhost:7041/api/Users/Delete/${userID}`;
+
+  fetch(url, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${JWTtoken}`
+  }
+  })
+  .then(response => {
+    if(response.ok)
+    {
+      console.log(response);
+      return response.json()
+    }
+    else if (response.status === 400) {
+      // Handle specific 400 Bad Request error
+      return response.text().then(errorMessage => {
+        console.error(`Bad Request: ${errorMessage}`);
+        // error message in user info form
+        document.getElementById('adminUsersPanelMsg').innerHTML = errorMessage;
+        throw new Error(`Bad Request: ${errorMessage}`);
+      });
+    } 
+    else 
+    {
+      // Handle other errors
+      console.error('Failed to fetch users information!');
+      document.getElementById('adminUsersPanelMsg').innerHTML = '<b>Failed</b> to fetch users information!';
+      throw new Error('Failed to fetch users information!');
+    }
+  })
+  .then(result => {
+    console.log('User was deleted successfully');
+    console.log(result);
+  })
+  .catch(error => console.log(error));
+};
 // =======================================================================================

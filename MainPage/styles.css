@@ -31,6 +31,12 @@ button{
   border-radius: 5px;
   margin-bottom: 10px;
 }
+.user-delete-button{
+  background-color: salmon;
+}
+.user-delete-button:hover{
+  background-color: rgb(219, 89, 45);
+}
 
 button:hover {
   background-color: #45a049;
@@ -55,4 +61,94 @@ li {
   padding: 10px;
   margin-bottom: 5px;
   border-radius: 5px;
+}
+
+
+/* ========================admin panel user dropdown items======================== */
+.user-dropdown {
+  cursor: pointer;
+  padding: 8px;
+  margin: 4px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  transition: background-color 0.3s;
+}
+
+.user-dropdown:hover {
+  background-color: #e0e0e0;
+}
+
+.user-info-panel {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  transform: translateX(-100%);
+  opacity: 0; /* Added opacity property */
+  visibility: hidden; /* Added visibility property */
+  padding: 16px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0.3s; /* Updated transition property */
+}
+
+.user-info-panel.show {
+  transform: translateX(0);
+  opacity: 1; /* Added opacity property */
+  visibility: visible; /* Added visibility property */
+}
+/* ========================admin panel user dropdown items======================== */
+
+#user-list {
+  width: fit-content;
+  margin: 30px auto 0;
+  list-style-type: none;
+  
+  > li {
+     width: 100%;
+     background-color: #f5f5f5;
+     margin-bottom: 10px;
+     overflow: hidden;
+     
+     &.open {
+        .user-header:after {
+           transform: rotate(180deg);
+        }
+        
+        .user-content {
+           max-height: 1000px;
+        }
+     }
+  }
+
+  .user-header {
+     position: relative;
+     padding: 20px 0 20px 30px;
+     line-height: 30px;
+     cursor: pointer;
+     
+     &:after {
+        content: "";
+        width: 0;
+        height: 0;
+        position: absolute;
+        top: 25px;
+        right: 25px;
+        border-style: solid;
+        border-width: 18px 12px 0 12px;
+        border-color: #757575 transparent transparent transparent;
+        transition: transform 0.5s ease-in;
+     }
+  }
+  
+  .user-content {
+     max-height: 0;
+     overflow: hidden;
+     transition: max-height 1s cubic-bezier(0, 1.05, 0, 1);
+  }
+  
+  .user-content-inner {
+     padding: 0 45px 30px;
+  }
 }
