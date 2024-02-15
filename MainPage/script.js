@@ -85,10 +85,8 @@ document.addEventListener('DOMContentLoaded', function () {
   
       if (userInfo != null) {
         userHasInfo = true;
-        // Additional logic if needed
       } else {
         userHasInfo = false;
-        // Additional logic if needed
       }
     });
   })
@@ -101,10 +99,8 @@ document.addEventListener('DOMContentLoaded', function () {
   
       if (userRes != null) {
         userHasInfo = true;
-        // Additional logic if needed
       } else {
         userHasInfo = false;
-        // Additional logic if needed
       }
     });
   });
@@ -503,10 +499,10 @@ function saveUserResToDB(userResJS, JWTtoken){
 
 };
 
-function getUserResFromDB(JWTtoken){
+async function getUserResFromDB(JWTtoken){
   const url = "https://localhost:7041/api/UserAccountInfo/GetUserResidence";
 
-  return fetch(url, {
+  return await fetch(url, {
       method: 'GET',
       headers: {
           'Content-type': 'application/json',
