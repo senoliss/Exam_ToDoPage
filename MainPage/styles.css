@@ -17,6 +17,17 @@ body {
   max-width: 95vw;
 }
 
+#appContainer {
+  position: relative; /* Make the container a positioning context */
+}
+
+#userImage {
+  position: relative;
+  top: 0;
+  right: 0;
+  margin: 20px;
+}
+
 .hidden {
   display: none;
 }

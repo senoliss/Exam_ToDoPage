@@ -6,16 +6,20 @@ document.addEventListener('DOMContentLoaded', function () {
   // ======================== PARSING JWT TOKEN ON DOM LOAD ================================
  
   const decodedToken = parseJwt(currentUserToken);
-  
-  console.log(decodedToken);
+  console.log('%c User Token:', 'color:orange; font-weight: bold;')
+  console.log({decodedToken});  // login computed prop name ({name1, name2, name3})
   
   const name = decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];
   const role = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
   
-  console.log('Name:', name);
-  console.log('Role:', role);
+  console.log('%c User:', 'color:orange; font-weight: bold;')
+  console.log({name, role});
   
   
+  // =======================================================================================
+  
+  // ========================= FETCHING AND SETTING IMAGE TO VIEW ==========================
+  fetchImageFromDB(currentUserToken);
   // =======================================================================================
   
   // ======================== ASSIGN THE HTML ELEMENTS TO VARIABLES ========================
@@ -211,16 +215,43 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log(imageFile);
     console.log(userInfoData);
 
+    // field for iamge upload
+    const fileInput = document.getElementById('uPicture');
+    
     if(!userHasInfo) {
       // NEED TO SOMEHOW FIGURE OUT SEPARATE IMAGE AND USER INFO SAVING
       saveUserInfoToDB(userInfoData, currentUserToken);
-      // saveImageToDB(imageFile, currentUserToken);
+
+      if (fileInput.files.length === 0) {
+        console.log('File input is empty');
+      } else {
+        console.log('File input is not empty');
+        saveImageToDB(imageFile, currentUserToken)
+            .then(() => {
+                fetchImageFromDB(currentUserToken);
+            })
+            .catch((error) => {
+                console.error('Error saving image:', error);
+            });
+      }
     }
     else if(userHasInfo){
       // NEED TO SOMEHOW FIGURE OUT SEPARATE IMAGE AND USER INFO SAVING
       // need to get user info in json and update it in DB
       updateUserInfoToDB(userInfoData, currentUserToken);
-      // saveImageToDB(imageFile, currentUserToken);
+
+      if (fileInput.files.length === 0) {
+        console.log('File input is empty');
+      } else {
+        console.log('File input is not empty');
+        saveImageToDB(imageFile, currentUserToken)
+            .then(() => {
+                fetchImageFromDB(currentUserToken);
+            })
+            .catch((error) => {
+                console.error('Error saving image:', error);
+            });
+      }
     }
     // Reset forms and hide residence form
     // addUserInfoForm.reset();
@@ -393,14 +424,14 @@ function updateUserInfoToDB(userInfoJS, JWTtoken){
 // =======================================================================================
 
 // ================================== IMAGE FUNCTIONS ====================================
-function saveImageToDB(imageFile, JWTtoken) {
+async function saveImageToDB(imageFile, JWTtoken) {
   const url = "https://localhost:7041/api/Image/uploadImage";
   
   // const formData = new FormData();
   // formData.append("Image", imageFile);
   console.log(imageFile);
 
-  fetch(url, {
+  await fetch(url, {
           method: 'POST',
           headers: {
               'Authorization': `Bearer ${JWTtoken}`
@@ -417,6 +448,35 @@ function saveImageToDB(imageFile, JWTtoken) {
       })
       .catch(error => console.log(error));
 };
+function fetchImageFromDB(JWTtoken) {
+  const url = "https://localhost:7041/api/Image/downloadImage";
+
+  return fetch(url, {
+      method: 'GET',
+      headers: {
+          'Content-type': 'application/json',
+          'Authorization': `Bearer ${JWTtoken}`
+      }
+  })
+  .then(response => {
+      if (response.ok) {
+          return response.blob();
+      } else {
+          console.error('Failed to fetch user image!');
+          return null;
+      }
+  })
+  .then(blob => {
+      // Convert blob data to URL
+      const imageUrl = URL.createObjectURL(blob);
+      // Set the fetched image URL as the src attribute of the img tag
+      document.getElementById("userImage").src = imageUrl;
+  })
+  .catch(error => {
+      console.log(error);
+      return null;
+  });
+}
 // =======================================================================================
 
 // ============================= USER RESIDENCE FUNCTIONS ================================
@@ -612,7 +672,7 @@ function populateAdminPanel(users) {
   // });
 
   const usersUL = document.getElementById('user-list');
-
+  usersUL.innerHTML = ''; // clear the list on repeated button clicks if it was populated before
   // Create dropdowns for each user
   users.forEach(user => {
     const userItem = document.createElement('li');

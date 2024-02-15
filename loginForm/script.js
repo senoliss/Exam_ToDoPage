@@ -56,16 +56,31 @@ function fetchData(login, pass){
         return response.text();
     })  //  Promise objektas sulaukiamas su then
     .then(result =>{
-        console.log("result", result.message);
+        console.log('%c User Token:', 'color:orange; font-weight: bold;')
+        console.log({result});
         if(notOk === true) {
-            resultMessage.innerHTML = 'Log In <b>successful!</b> Redirecting in Xs...';
+            resultMessage.style.color = '#36454F';
+
             // create a session storage and create a user there to transfer between pages, later create a local storage to keep users data after he creates something and etc.
             localStorage.setItem("currentUser", result);
-            window.location.href = 'http://127.0.0.1:5500/MainPage/mainPage.html';
+
+            let countdown = 3;
+            const countdownInterval = setInterval(function () {
+                countdown--;
+
+                // Update the displayed countdown
+                resultMessage.innerHTML = `Log In <b>successful!</b> Redirecting in ${countdown}s...`;
+
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval); // Clear the interval when countdown reaches 0
+                    window.location.href = 'http://127.0.0.1:5500/MainPage/mainPage.html';
+                    console.log("Delayed action after successful login");
+                }
+            }, 1000); // Update every 1000ms (1s)
         }
         else {
             resultMessage.style.color = '#ff0033';
-            resultMessage.innerHTML = `<b>${result.error} !</b>`;
+            resultMessage.innerHTML = `<b>${result}</b>`;
         }
     })
     .catch(error =>{
@@ -73,3 +88,4 @@ function fetchData(login, pass){
     });
     
 };
+
